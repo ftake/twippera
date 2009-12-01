@@ -249,10 +249,19 @@ var Twippera = {
                 this.fcount++;
             }
         }
+		var url;
 
-        var url = postType == 'home_timeline' ?
-            'http://api.twitter.com/1/statuses/home_timeline.json' : 
-            "http://twitter.com/statuses/" + postType + ".json";
+		//fill cache hack
+        if (postType == "home_timeline") {
+            url = 'http://api.twitter.com/1/statuses/home_timeline.json' + "?count=" + config.limit;
+			//for lack of consistency
+            if (cache.list.length > 5) { //cache.list.length != 0
+                url += "&since_id=" + cache.list[5].id //[0].id
+            }
+        } else {
+			url = "http://twitter.com/statuses/" + postType + ".json";
+		}
+
         Ajax.request(
             url,
             function(xhr) {
