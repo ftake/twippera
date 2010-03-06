@@ -39,14 +39,14 @@ q:before, q:after { content: ''; }
  * x-small is for IE < 6 and IE6 quirks mode.
  */
 body {
-    font:13px arial,helvetica,clean,sans-serif;
+    font:13px sans-serif;
 }
 
 /*form系
   firefox, safari では100%は大きすぎ。99%に。
 --------------------------------------------------------------------*/
 select, input, textarea {
-    font:99% arial,helvetica,clean,sans-serif;
+    font:99% sans-serif;
 }
 
 label, button, select, option {
