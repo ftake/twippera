@@ -10,7 +10,7 @@ var Twippera = {
     timeout  : 30000,
     fcount   : 0,
     msgState : "recent",
-    reply_to : null
+    reply_to : null,
 }
     Twippera.initEvent = function() {
         var self = this;
@@ -86,10 +86,10 @@ var Twippera = {
                 '&nbsp;简体中文: Jimmy Lvo',
                 '&nbsp;Français: Yoann007',
                 '&nbsp;Deutsch: Andrew Kupfer',
-				'&nbsp;Ймення на рідній мові: Victoria Herukh',
-				'&nbsp;Latviešu: Ivars Šaudinis',
-				'&nbsp;Norsk bokmål: Brede Kaasa',
-				'&nbsp;Português BR Carlos Gomes'
+                '&nbsp;Ймення на рідній мові: Victoria Herukh',
+                '&nbsp;Latviešu: Ivars Šaudinis',
+                '&nbsp;Norsk bokmål: Brede Kaasa',
+                '&nbsp;Português BR Carlos Gomes'
             );
         }, false);
 
@@ -249,18 +249,18 @@ var Twippera = {
                 this.fcount++;
             }
         }
-		var url;
+        var url;
 
-		//fill cache hack
+        //fill cache hack
         if (postType == "home_timeline") {
             url = 'http://api.twitter.com/1/statuses/home_timeline.json' + "?count=" + config.limit;
-			//for lack of consistency
+            //for lack of consistency
             if (cache.list.length > 5) { //cache.list.length != 0
                 url += "&since_id=" + cache.list[5].id //[0].id
             }
         } else {
-			url = "http://twitter.com/statuses/" + postType + ".json";
-		}
+            url = "http://twitter.com/statuses/" + postType + ".json";
+        }
 
         Ajax.request(
             url,
@@ -316,6 +316,23 @@ var Twippera = {
             }
         );
 
+    }
+    Twippera.quatedtweet = function(id) {
+        var status   = $('status');
+        var cache = this.cache;
+        for (var i = 0; i < cache.list.length; i++) {
+            var e = cache.list[i];
+            if (e.id == id) {
+                var status   = $('status');
+                replay_to = e.id; //important!
+                status.value = " QT @" + e.usr + ": " + e.rawmsg;
+                status.focus();
+                var r = status.createTextRange();
+                r.move('character', 0);
+                r.select();
+                break;
+            }
+        }
     }
 
     Twippera.destroy = function(id) {
@@ -383,7 +400,7 @@ var Twippera = {
         user    : "",
         pass    : "",
         locale  : "en",
-		langs   : {},
+        langs   : {},
         lng     : null,
         time    : 60000,
         limit   : 200
@@ -461,20 +478,20 @@ var Twippera = {
         }
     };
     Twippera.config.setLocale = function(lng) {
-		this.script= document.createElement('script');
-		this.script.type = 'text/javascript';
-		this.script.src = './js/lng/' + lng + '.js';
-		document.body.appendChild(this.script);
+        this.script= document.createElement('script');
+        this.script.type = 'text/javascript';
+        this.script.src = './js/lng/' + lng + '.js';
+        document.body.appendChild(this.script);
     };
-	Twippera.config.loadLocaleFile = function(langs) {
-	    for(var i in langs) {
-			if($(i)) {
-				$(i).innerHTML = langs[i];
-			}
-			this.langs[i] = langs[i];
+    Twippera.config.loadLocaleFile = function(langs) {
+        for(var i in langs) {
+            if($(i)) {
+                $(i).innerHTML = langs[i];
+            }
+            this.langs[i] = langs[i];
         }
-		this.script.parentNode.removeChild(this.script);
-	};
+        this.script.parentNode.removeChild(this.script);
+    };
 
     Twippera.msg = function() {
         this.list = [];
@@ -511,6 +528,10 @@ var Twippera = {
                         'onclick="Twippera.retweet(#{id})">',
                         'RT',
                     '</span>',
+                    '<span class="retweet" ',
+                        'onclick="Twippera.quatedtweet(#{id})">',
+                        'QT',
+                    '</span>',
                 '</span>',
             '</li>'].join('');
     };
@@ -532,6 +553,7 @@ var Twippera = {
                         img    : json[i].sender.profile_image_url,
                         usr    : json[i].sender.screen_name,
                         msg    : json[i].text,
+                        rawmsg : json[i].text,
                         time   : json[i].created_at,
                         cached : 0
                     });
@@ -548,6 +570,7 @@ var Twippera = {
                         img    : json[i].user.profile_image_url,
                         usr    : json[i].user.screen_name,
                         msg    : json[i].text,
+                        rawmsg : json[i].text,
                         time   : json[i].created_at,
                         class  : cl,
                         prot   : json[i].user.protected,
@@ -823,7 +846,7 @@ var Twippera = {
     }
     Twippera.update.check = function() {
         var self = this;
-		var config = self.config;
+        var config = self.config;
 
         Ajax.request(
             self.url,
