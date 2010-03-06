@@ -327,9 +327,10 @@ var Twippera = {
                 replay_to = e.id; //important!
                 status.value = " QT @" + e.usr + ": " + e.rawmsg;
                 status.focus();
-                var r = status.createTextRange();
-                r.move('character', 0);
-                r.select();
+                //var r = status.createTextRange();
+                //r.move('character', 0);
+                //r.select();
+				status.setSelectionRange(0, 0);
                 break;
             }
         }
